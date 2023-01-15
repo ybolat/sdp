@@ -357,7 +357,234 @@ public class FacadeServer {
                             break;
                         }
                     }
+                } else if (mainUser.getRole().getRole().equals("ROLE_ADMIN")) {
+                    while (true) {
+                        System.out.println("1. Заказы");
+                        System.out.println("2. Товары");
+                        System.out.println("3. Выход");
+
+                        System.out.print("Введите цифру: ");
+                        choice = in.nextInt();
+
+                        if (choice == 1) {
+                            rs = object.getStmt().executeQuery("Select * from orders");
+
+                            List<Order> orderList = new ArrayList<>();
+                            HashMap<Integer, Integer> storeIdList = new HashMap<>();
+                            HashMap<Integer, Integer> courierIdList = new HashMap<>();
+
+                            while (rs.next()) {
+                                Order order = new Order();
+
+                                order.setId(rs.getLong("id"));
+                                order.setStatus(rs.getString("status"));
+                                order.setTotal_price(rs.getInt("total_price"));
+
+                                storeIdList.put(orderList.size(), rs.getInt("store_id"));
+                                courierIdList.put(orderList.size(), rs.getInt("courier_id"));
+
+                                orderList.add(order);
+                            }
+
+                            for (Map.Entry<Integer, Integer> set :
+                                    storeIdList.entrySet()) {
+                                rs = object.getStmt().executeQuery("select * from store where id=" + set.getValue());
+
+                                while (rs.next()) {
+                                    Store store = new Store();
+
+                                    store.setId(rs.getLong("id"));
+                                    store.setPrice(rs.getInt("price"));
+                                    store.setFlowerName(rs.getString("flowers_name"));
+
+                                    orderList.get(set.getKey()).setStore(store);
+                                }
+                            }
+
+                            for (Map.Entry<Integer, Integer> set :
+                                    courierIdList.entrySet()) {
+                                rs = object.getStmt().executeQuery("select * from courier where id=" + set.getValue());
+
+                                while (rs.next()) {
+                                    Courier courier = new Courier();
+
+                                    courier.setId(rs.getLong("id"));
+                                    courier.setPhone(rs.getString("phone"));
+
+                                    orderList.get(set.getKey()).setCourier(courier);
+                                }
+
+                            }
+
+                            orderList.forEach(v -> {
+                                System.out.println("Номер заказа: " + v.getId());
+                                System.out.println("Статус: " + v.getStatus());
+                                System.out.println("Цена: " + v.getTotal_price());
+                                System.out.println("Цветы: " + v.getStore().getFlowerName());
+                                if (v.getCourier() != null)
+                                    System.out.println("Свзят с курьером: " + v.getCourier().getPhone());
+                                System.out.println("-----------------------------------------------");
+                            });
+                        } else if (choice == 2) {
+                            System.out.println("1. Добавить");
+                            System.out.println("2. Обноваить");
+                            System.out.println("3. Удалить");
+                            System.out.println("4. Список");
+
+                            System.out.print("Введите цифру: ");
+                            choice = in.nextInt();
+
+                            if (choice == 1) {
+                                System.out.print("Введите название товара: ");
+                                String flower_name = in.next();
+
+                                System.out.print("Введите цену: ");
+                                int price = in.nextInt();
+
+                                Store store = new Store();
+
+                                store.setFlowerName(flower_name);
+                                store.setPrice(price);
+
+                                object.getStmt().executeUpdate("insert into store (flowers_name, price) " +
+                                        "values (" + store.getFlowerName() + ", " + store.getPrice() + ")");
+                            } else if (choice == 2) {
+                                rs = object.getStmt().executeQuery("SELECT * FROM store");
+
+                                List<Store> storeList = new ArrayList<>();
+
+                                while (rs.next()) {
+                                    Store store = new Store();
+
+                                    store.setId(rs.getLong("id"));
+                                    store.setFlowerName(rs.getString("flowers_name"));
+                                    store.setPrice(rs.getInt("price"));
+
+                                    storeList.add(store);
+                                }
+
+                                storeList.forEach(v -> {
+                                    System.out.println(v.getId() + ". " + v.getFlowerName() + " " + v.getPrice());
+                                    System.out.println("------------------------------------------------------");
+                                });
+
+                                System.out.print("Введите цифру: ");
+                                choice = in.nextInt();
+
+                                System.out.print("Введите новое название товара: ");
+                                String flower_name = in.next();
+
+                                System.out.print("Введите новую цену: ");
+                                int price = in.nextInt();
+
+                                Store store = new Store();
+
+                                store.setFlowerName(flower_name);
+                                store.setPrice(price);
+
+                                object.getStmt().executeUpdate("update store set flowers_name=" + store.getFlowerName()
+                                + " and price=" + store.getPrice() + " where id=" + choice);
+
+                            } else if (choice == 3) {
+                                rs = object.getStmt().executeQuery("SELECT * FROM store");
+
+                                List<Store> storeList = new ArrayList<>();
+
+                                while (rs.next()) {
+                                    Store store = new Store();
+
+                                    store.setId(rs.getLong("id"));
+                                    store.setFlowerName(rs.getString("flowers_name"));
+                                    store.setPrice(rs.getInt("price"));
+
+                                    storeList.add(store);
+                                }
+
+                                storeList.forEach(v -> {
+                                    System.out.println(v.getId() + ". " + v.getFlowerName() + " " + v.getPrice());
+                                    System.out.println("------------------------------------------------------");
+                                });
+
+                                System.out.print("Введите цифру: ");
+                                choice = in.nextInt();
+
+                                object.getStmt().executeUpdate("Delete from store where id=" + choice);
+                            } else {
+                                rs = object.getStmt().executeQuery("SELECT * FROM store");
+
+                                while (rs.next()) {
+                                    System.out.println(rs.getLong("id"));
+                                    System.out.println(rs.getString("flowers_name"));
+                                    System.out.println(rs.getInt("price"));
+                                    System.out.println("---------------------------");
+                                }
+                            }
+                        } else {
+                            inSystem = false;
+                            break;
+                        }
+                    }
                 }
+            } else {
+                System.out.print("Введите почту: ");
+                email = in.next();
+
+                System.out.print("Введите пароль: ");
+                password = in.next();
+
+                System.out.print("Адрес: ");
+                String address = in.next();
+
+                System.out.print("Квартира: ");
+                String apartment = in.next();
+
+                System.out.print("Этаж: ");
+                int floor = in.nextInt();
+
+                System.out.print("Подъезд: ");
+                int entrance = in.nextInt();
+
+                Role role = new Role();
+
+                rs = object.getStmt().executeQuery("select * from role where role.role='ROLE_USER'");
+
+                while (rs.next()) {
+                    role.setRole(rs.getString("role"));
+                    role.setId(rs.getLong("id"));
+                }
+
+                User user = new User();
+
+                user.setRole(role);
+                user.setEmail(email);
+                user.setPassword(password);
+
+                String sqll = "insert into users (email, password, role_id) VALUES (" + user.getEmail() + ", " + user.getPassword() + ", 1)";
+
+                object.getStmt().executeUpdate(sqll);
+
+                UserProfile userProfile = new UserProfile();
+
+                rs = object.getStmt().executeQuery("select * from users");
+
+                while (rs.next()) {
+                    if (rs.getString("password").equals(user.getPassword()) && rs.getString("email").equals(user.getEmail())) {
+                        user.setId(rs.getLong("id"));
+                    }
+                }
+
+                userProfile.setUser(user);
+                userProfile.setAddress(address);
+                userProfile.setApartment(apartment);
+                userProfile.setFloor(floor);
+                userProfile.setEntrance(entrance);
+
+                String sql = "insert into user_profile (id, user_id, address, apartment, floor, entrance) " +
+                        "values (" + userProfile.getUser().getId() + ", " + userProfile.getUser().getId() + ", " + userProfile.getAddress()
+                        + ", " + userProfile.getApartment() + ", " + userProfile.getFloor() + ", " + userProfile.getEntrance() + ");";
+
+                object.getStmt().executeUpdate(sql);
+
             }
 
         }
