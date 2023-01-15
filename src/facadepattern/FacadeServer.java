@@ -446,8 +446,10 @@ public class FacadeServer {
                                 store.setFlowerName(flower_name);
                                 store.setPrice(price);
 
-                                object.getStmt().executeUpdate("insert into store (flowers_name, price) " +
-                                        "values (" + store.getFlowerName() + ", " + store.getPrice() + ")");
+                                String sql = "insert into store (flowers_name, price) values ("
+                                        + "'" + store.getFlowerName() + "'" + ", " + store.getPrice() + ")";
+
+                                object.getStmt().executeUpdate(sql);
                             } else if (choice == 2) {
                                 rs = object.getStmt().executeQuery("SELECT * FROM store");
 
@@ -482,8 +484,10 @@ public class FacadeServer {
                                 store.setFlowerName(flower_name);
                                 store.setPrice(price);
 
-                                object.getStmt().executeUpdate("update store set flowers_name=" + store.getFlowerName()
-                                + " and price=" + store.getPrice() + " where id=" + choice);
+                                String sql = "update store set flowers_name='" + flower_name + "'"
+                                        + ", price=" + store.getPrice() + " where id=" + choice;
+
+                                object.getStmt().executeUpdate(sql);
 
                             } else if (choice == 3) {
                                 rs = object.getStmt().executeQuery("SELECT * FROM store");
