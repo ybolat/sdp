@@ -204,7 +204,7 @@ public class FacadeServer {
                         choice = in.nextInt();
 
                         if (choice == 1) {
-                            rs = object.getStmt().executeQuery("Select * from orders where courier_id is null");
+                            rs = object.getStmt().executeQuery("Select * from orders where status='закончен'");
 
                             List<Order> orderList = new ArrayList<>();
                             HashMap<Integer, Integer> storeIdList = new HashMap<>();
@@ -247,7 +247,7 @@ public class FacadeServer {
                             System.out.print("Введите номер заказа: ");
                             choice = in.nextInt();
 
-                            object.getStmt().executeUpdate("update orders set courier_id=" + mainUser.getId() + " and status='доставка' where id=" + choice);
+                            object.getStmt().executeUpdate("update orders set courier_id=" + mainUser.getId() + ", status='доставка' where id=" + choice);
                         } else {
                             inSystem = false;
                             break;
