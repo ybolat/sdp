@@ -5,6 +5,7 @@ import singleton.SingleObject;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class FacadeServer {
@@ -130,6 +131,28 @@ public class FacadeServer {
                                     totalPrice + ", " + choice + ")";
 
                             object.getStmt().executeUpdate(sql);
+
+                            rs = object.getStmt().executeQuery("select * from orders where status='заказ оформлен' " +
+                                    "and user_profile_id=" + mainUser.getId() + " and total_price=" + totalPrice + " and store_id=" + choice);
+
+                            Order order = new Order();
+
+                            while (rs.next()) {
+                                order.setId(rs.getLong("id"));
+                                order.setStore(storeList.get(choice - 1));
+                            }
+
+                            System.out.println("----------------------------------------------------------");
+                            System.out.println("номер чека: " + order.getId());
+                            System.out.println();
+                            System.out.println(order.getStore().getFlowerName() + " " + order.getStore().getPrice() + "тг");
+                            System.out.println("Доставка 1200тг");
+                            System.out.println();
+                            System.out.println("Итог с учетом НДС " + totalPrice);
+                            System.out.println("Оплачено картой **86");
+                            System.out.println();
+                            System.out.println("время заказа " + LocalDateTime.now());
+                            System.out.println("----------------------------------------------------------");
                         } else if (choice == 2) {
                             rs = object.getStmt().executeQuery("Select * from orders where user_profile_id=" + mainUser.getId());
 
