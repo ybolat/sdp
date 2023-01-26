@@ -1,5 +1,6 @@
 package facadepattern;
 
+import iterator.StoreIterator;
 import module.*;
 import singleton.SingleObject;
 
@@ -116,9 +117,16 @@ public class FacadeServer {
                                 storeList.add(store);
                             }
 
-                            storeList.forEach(v -> {
-                                System.out.println(v.getId() + " " + v.getFlowerName() + " " + v.getPrice());
-                            });
+                            StoreIterator iterator = new StoreIterator(storeList);
+
+                            while (iterator.hasNext()) {
+                                Store temp = iterator.next();
+                                System.out.println(temp.getId() + " " + temp.getFlowerName() + " " + temp.getPrice());
+                            }
+
+//                            storeList.forEach(v -> {
+//                                System.out.println(v.getId() + " " + v.getFlowerName() + " " + v.getPrice());
+//                            });
 
                             System.out.print("Введите цифру: ");
                             choice = in.nextInt();
