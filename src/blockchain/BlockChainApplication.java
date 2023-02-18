@@ -5,7 +5,7 @@ import java.util.List;
 
 public class BlockChainApplication {
     public static void main(String[] args) {
-        Transaction transaction = new Transaction("FlowerStore", "Alimzhan", 1005L);
+        Transaction transaction = new Transaction("FlowerStore", "Alimzhan", 105L);
         Transaction secondTransaction = new Transaction("FlowerStore", "Erabeast", 1007L);
         Transaction thirdTransaction = new Transaction("FlowerStore", "Abdualitos", 1500L);
         System.out.println(transaction.hashCode());
